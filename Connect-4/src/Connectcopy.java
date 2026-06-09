@@ -13,32 +13,31 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class Connect4 {
+
+    public static JFrame frame = new JFrame("Connect 4");
+
+    public static GamePanel panel;
     
     public static void main(String[] args) {
-        
-    }
-
-    public Connect4() {
-        JFrame frame = new JFrame("Connect 4");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(1280, 720));
         frame.setResizable(false);
-
-        GamePanel panel = new GamePanel();
+        panel = new GamePanel();
+        frame.setContentPane(panel);
+        frame.pack();
         panel.setBackground(Color.WHITE);
         panel.repaint();
         panel.setVisible(true);
-        
-        frame.setContentPane(panel);
-        frame.pack();
         frame.setVisible(true);
     }
+
+    
 
     public static class GamePanel extends JPanel {
         private BufferedImage boardImg;
         private BufferedImage blueToken;
         private BufferedImage redToken;
-        Integer[][] board = new Integer[6][7];
+        char[][] board = new char[6][7];
 
 
         private void loadSprite() {           
