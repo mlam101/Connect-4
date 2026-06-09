@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 public class Connect4 {
     
     public static void main(String[] args) {
-        
+        new Connect4();
     }
 
     public Connect4() {
@@ -28,7 +28,7 @@ public class Connect4 {
         panel.setBackground(Color.WHITE);
         panel.repaint();
         panel.setVisible(true);
-        
+
         frame.setContentPane(panel);
         frame.pack();
         frame.setVisible(true);
@@ -38,7 +38,8 @@ public class Connect4 {
         private BufferedImage boardImg;
         private BufferedImage blueToken;
         private BufferedImage redToken;
-        Integer[][] board = new Integer[6][7];
+        private Integer colourTurn = 1;
+        Integer[][] board = new Integer[7][6];
 
 
         private void loadSprite() {           
@@ -52,45 +53,76 @@ public class Connect4 {
             }
         }
 
+        private JButton button1 = new JButton();
+        private JButton button2 = new JButton();
+        private JButton button3 = new JButton();
+        private JButton button4 = new JButton();
+        private JButton button5 = new JButton();
+        private JButton button6 = new JButton();
+        private JButton button7 = new JButton();
+
+        JButton[] buttons = new JButton[] {button1, button2, button3, button4, button5, button6, button7};
+
+
         JPanel boardPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 g.drawImage(boardImg, 200, 50, null);
+                drawBoard(g);
             }
         };
 
         private void drawBoard(Graphics g) {
-            for (Integer[] row : board) {
-                for (Integer cell : row) {
-                    
-                }
+            for (int idx = 0; idx < board.length; idx++) {
+                Integer[] row = board[idx];
+                for (int cell = 0; cell < row.length; cell++) {
+                    if (row[cell] != null) {
+                        switch (row[cell]) {
+                            case 1:
+                                g.drawImage(redToken, ((idx*100)+200), ((cell*100)+50), null);
+                                break;
+                            case 2:
+                                g.drawImage(blueToken, ((idx*100)+200), ((cell*100)+50), null);
+                                break;
+                            default:
+                        }
+                    }
+                }   
             }
         }
         private void buttonsInit() {
-            for (int i = 0; i < 10; i++) {
-                JButton button = new JButton();
-                button.setName(Integer.toString(i));
+            for (int idx = 0; idx < buttons.length; idx++) {
+                JButton button = buttons[idx];
+                button.setName(Integer.toString(idx));
+                button.setPreferredSize(new Dimension(100, 50));
+                button.setBackground(Color.BLUE);
+                boardPanel.add(button);
                 button.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        placeToken(button.getName());
+                        placeToken(Integer.parseInt(button.getName()), colourTurn);
+                        boardPanel.repaint();
+                        debugger();
                     }
                     
                 });
             }
         }
-
-        private void placeToken(String id) {
-            switch (id) {
-                case "0":
-                    
-                    break;
-                case "1":
-                    
-                    break;                    
-                default:
+        private void debugger() {
+            for (Integer[] row : board) {
+                for (Integer cell : row) {
+                    System.out.println(cell);
+                }
             }
+        }
+        private void placeToken(Integer num, Integer colour) {
+            int i = 5;
+            while ((board[num][i] != null) && (i > 0)) {
+                i--;
+            }
+            board[num][i] = colour;               
+            System.err.println("TOKEN UPDATED");
         }
 
         GamePanel() {
@@ -98,6 +130,7 @@ public class Connect4 {
             setPreferredSize(new Dimension(1280, 720));
             repaint();
             setLayout(new BorderLayout());
+            buttonsInit();
             add(boardPanel, BorderLayout.CENTER);
         }
 
