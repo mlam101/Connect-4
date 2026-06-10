@@ -56,9 +56,10 @@ public class Connect4 {
     }
 
     private void setGamePanel() {
-        mainLabel = new JLabel("START", JLabel.CENTER);
+        mainLabel = new JLabel("RED START", JLabel.CENTER);
         mainLabel.setPreferredSize(new Dimension(400, 50));
         mainLabel.setFont(new Font("Arial", Font.BOLD, 50));
+        mainLabel.setOpaque(true);
         
         buttonsInit();
         panel.add(buttonPanel, BorderLayout.PAGE_START);
@@ -92,7 +93,7 @@ public class Connect4 {
             JButton button = buttons[idx];
             button.setName(Integer.toString(idx));
             button.setPreferredSize(new Dimension(100, 50));
-            button.setBackground(Color.GREEN);
+            button.setBackground(Color.BLACK);
             buttonPanel.add(button);
             button.addActionListener(new ActionListener() {
                 @Override
@@ -101,26 +102,51 @@ public class Connect4 {
                     panel.repaint();
                     colourTurn %= 2;
                     colourTurn++;
-                    switch (winChecker()) {
-                        case -1:
-                            break;
-
-                        case 0:
-                            mainLabel.setText("BLUE WINS");
-                            System.err.println("LOOLLLL");
-                            break;
-                        
-                        case 1:
-                            mainLabel.setText("RED WINS");
-                            System.out.println("RED LLOl");
-                            break;
-
-                    }
-                    debugger();
+                    ColourSwitch(colourTurn);
+                    
+                    //debugger();
                 }
                 
             });
         }
+    }
+
+    private void ColourSwitch(Integer turn) {
+        for (JButton button : buttons) {
+            if (turn == 1) {
+                button.setBackground(Color.RED);
+            }
+            else if (turn == 2) {
+                button.setBackground(Color.BLUE);
+            }
+            
+            if (winChecker() != -1) {
+                button.setVisible(false);
+            }
+            
+        }
+
+        switch (winChecker()) {
+                        case -1:
+                            if (colourTurn == 1) {
+                                mainLabel.setText("RED TURN");
+                            }
+                            else {
+                                mainLabel.setText("BLUE TURN");
+                            }
+                            break;
+
+                        case 2:
+                            mainLabel.setText("BLUE WINS");
+                            mainLabel.setBackground(Color.BLUE);
+                            break;
+                        
+                        case 1:
+                            mainLabel.setText("RED WINS");
+                            mainLabel.setBackground(Color.RED);
+                            break;
+
+                    }
     }
 
     private Integer winChecker() {
@@ -161,7 +187,7 @@ public class Connect4 {
     }
     checkerNum = 1;
     while (checkerNum < 3) { //For diagonal 4s
-        for (int idx = 0; idx < board.length; idx++) {
+        for (int idx = 0; idx < 4; idx++) {
             for (int i = 0; i < 3; i++) {
                 if (board[i][idx] == checkerNum) {
                     if (board[i+1][idx+1] == checkerNum) {
