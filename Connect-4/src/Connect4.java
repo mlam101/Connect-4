@@ -208,8 +208,9 @@ public class Connect4 {
                 }
             checkerNum++;
             }
+            checkerNum = 1;
             while (checkerNum < 3) { //For diagonal 4s
-                for (int idx = 4; idx > 0; idx--) {
+                for (int idx = 6; idx > 2; idx--) {
                     for (int i = 0; i < 3; i++) {
                         if (board[i][idx] == checkerNum) {
                             if (board[i+1][idx-1] == checkerNum) {
