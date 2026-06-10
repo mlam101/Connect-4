@@ -157,7 +157,7 @@ public class Connect4 {
 
         private Integer winChecker() {
             int checkerNum = 1;
-            while (checkerNum != 3) {
+            while (checkerNum < 3) { //For horizontal 4s
                 for (int idx = 0; idx < board.length; idx++) {
                     int[] row = board[idx];
                     for (int i = 0; i < (row.length - 3); i++) {
@@ -174,6 +174,57 @@ public class Connect4 {
                 }
             checkerNum++;
             }
+            checkerNum = 1;
+            while (checkerNum < 3) { //For verticals 4s
+                for (int idx = 0; idx < board.length; idx++) {
+                    for (int i = 0; i < 3; i++) {
+                        if (board[i][idx] == checkerNum) {
+                            if (board[i+1][idx] == checkerNum) {
+                                if (board[i+2][idx] == checkerNum) {
+                                    if (board[i+3][idx] == checkerNum) {
+                                        return checkerNum;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            checkerNum++;
+            }
+            checkerNum = 1;
+            while (checkerNum < 3) { //For diagonal 4s
+                for (int idx = 0; idx < board.length; idx++) {
+                    for (int i = 0; i < 3; i++) {
+                        if (board[i][idx] == checkerNum) {
+                            if (board[i+1][idx+1] == checkerNum) {
+                                if (board[i+2][idx+2] == checkerNum) {
+                                    if (board[i+3][idx+3] == checkerNum) {
+                                        return checkerNum;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            checkerNum++;
+            }
+            while (checkerNum < 3) { //For diagonal 4s
+                for (int idx = 4; idx > 0; idx--) {
+                    for (int i = 0; i < 3; i++) {
+                        if (board[i][idx] == checkerNum) {
+                            if (board[i+1][idx-1] == checkerNum) {
+                                if (board[i+2][idx-2] == checkerNum) {
+                                    if (board[i+3][idx-3] == checkerNum) {
+                                        return checkerNum;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            checkerNum++;
+            }
+
             return -1;
             
         }
