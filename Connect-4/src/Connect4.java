@@ -2,6 +2,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,6 +25,8 @@ public class Connect4 {
     JPanel panel;
     GamePanel boardPanel;
 
+    JLabel mainLabel;
+
     private JButton button1 = new JButton();
     private JButton button2 = new JButton();
     private JButton button3 = new JButton();
@@ -43,19 +46,28 @@ public class Connect4 {
 
         panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
-        panel.setOpaque(true);
-
-        buttonsInit();
-        panel.add(buttonPanel, BorderLayout.PAGE_START);
-        boardPanel = new GamePanel();
-        boardPanel.setVisible(true);
-        panel.add(boardPanel);
+        panel.setVisible(true);
+        setGamePanel();
 
         frame.setContentPane(panel);
         frame.pack();
         frame.setVisible(true);
-        panel.setVisible(true);
 
+    }
+
+    private void setGamePanel() {
+        mainLabel = new JLabel("START", JLabel.CENTER);
+        mainLabel.setPreferredSize(new Dimension(400, 50));
+        mainLabel.setFont(new Font("Arial", Font.BOLD, 50));
+        
+        buttonsInit();
+        panel.add(buttonPanel, BorderLayout.PAGE_START);
+        boardPanel = new GamePanel();
+        boardPanel.setLayout(new BorderLayout());
+        boardPanel.add(mainLabel, BorderLayout.PAGE_START);
+        boardPanel.setVisible(true);
+
+        panel.add(boardPanel);
     }
 
     private void placeToken(Integer num, Integer colour) {
@@ -80,7 +92,7 @@ public class Connect4 {
             JButton button = buttons[idx];
             button.setName(Integer.toString(idx));
             button.setPreferredSize(new Dimension(100, 50));
-            button.setBackground(Color.BLUE);
+            button.setBackground(Color.GREEN);
             buttonPanel.add(button);
             button.addActionListener(new ActionListener() {
                 @Override
@@ -89,6 +101,21 @@ public class Connect4 {
                     panel.repaint();
                     colourTurn %= 2;
                     colourTurn++;
+                    switch (winChecker()) {
+                        case -1:
+                            break;
+
+                        case 0:
+                            mainLabel.setText("BLUE WINS");
+                            System.err.println("LOOLLLL");
+                            break;
+                        
+                        case 1:
+                            mainLabel.setText("RED WINS");
+                            System.out.println("RED LLOl");
+                            break;
+
+                    }
                     debugger();
                 }
                 
@@ -97,26 +124,78 @@ public class Connect4 {
     }
 
     private Integer winChecker() {
-        int checkerNum = 1;
-        while (checkerNum != 3) {
-            for (int idx = 0; idx < board.length; idx++) {
-                int[] row = board[idx];
-                for (int i = 0; i < (row.length - 3); i++) {
-                    if (row[i] == checkerNum) {
-                        if (row[i+1] == checkerNum) {
-                            if (row[i+2] == checkerNum) {
-                                if (row[i+3] == checkerNum) {
-                                    return checkerNum;
-                                }
+    int checkerNum = 1;
+    while (checkerNum < 3) { //For horizontal 4s
+        for (int idx = 0; idx < board.length; idx++) {
+            int[] row = board[idx];
+            for (int i = 0; i < (row.length - 3); i++) {
+                if (row[i] == checkerNum) {
+                    if (row[i+1] == checkerNum) {
+                        if (row[i+2] == checkerNum) {
+                            if (row[i+3] == checkerNum) {
+                                return checkerNum;
                             }
                         }
                     }
                 }
             }
-        checkerNum++;
         }
-        return -1;
-        
+    checkerNum++;
+    }
+    checkerNum = 1;
+    while (checkerNum < 3) { //For verticals 4s
+        for (int idx = 0; idx < board.length; idx++) {
+            for (int i = 0; i < 3; i++) {
+                if (board[i][idx] == checkerNum) {
+                    if (board[i+1][idx] == checkerNum) {
+                        if (board[i+2][idx] == checkerNum) {
+                            if (board[i+3][idx] == checkerNum) {
+                                return checkerNum;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    checkerNum++;
+    }
+    checkerNum = 1;
+    while (checkerNum < 3) { //For diagonal 4s
+        for (int idx = 0; idx < board.length; idx++) {
+            for (int i = 0; i < 3; i++) {
+                if (board[i][idx] == checkerNum) {
+                    if (board[i+1][idx+1] == checkerNum) {
+                        if (board[i+2][idx+2] == checkerNum) {
+                            if (board[i+3][idx+3] == checkerNum) {
+                                return checkerNum;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    checkerNum++;
+    }
+    checkerNum = 1;
+    while (checkerNum < 3) { //For diagonal 4s
+        for (int idx = 6; idx > 2; idx--) {
+            for (int i = 0; i < 3; i++) {
+                if (board[i][idx] == checkerNum) {
+                    if (board[i+1][idx-1] == checkerNum) {
+                        if (board[i+2][idx-2] == checkerNum) {
+                            if (board[i+3][idx-3] == checkerNum) {
+                                return checkerNum;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    checkerNum++;
+    }
+
+    return -1;
+            
     }
     private void debugger() {
         for (int[] row : board) {
@@ -150,9 +229,6 @@ public class Connect4 {
             super.paintComponent(g);
             g.drawImage(boardImg, 300, 50, null);
             drawBoard(g);
-            if (winChecker() != -1) {
-               drawWin(g);
-            }
         }
 
         private void drawBoard(Graphics g) {
@@ -171,18 +247,6 @@ public class Connect4 {
                     }  
             }
         }
-
-        private void drawWin(Graphics g) {
-            String message;
-            if (winChecker() == 2) {
-                message = "BLUE WINS";
-            } 
-            else {
-                message = "RED WINS";
-            }
-            g.drawString(message, 300, 50);
-        }
-
 
         GamePanel() {
             loadSprite();
